@@ -1,13 +1,11 @@
 // Data source for B2C Retail Benchmarks
 // Categories: Fashion, Home, Beauty, Electronics
-// Price Tiers: Budget, Mid-Range, Luxury
-
 export type Industry = 'Fashion' | 'Home' | 'Beauty' | 'Electronics';
 export type PriceTier = 'Budget' | 'Mid-Range' | 'Luxury';
 
 export interface BenchmarkData {
     id: string;
-    category: 'Acquisition' | 'Conversion' | 'Retention' | 'Economics';
+    category: 'Strategic Efficiency' | 'Acquisition' | 'Conversion' | 'Channel Mix' | 'Retention' | 'Economics';
     name: string;
     unit: string;
     description: string;
@@ -157,6 +155,69 @@ export const retailBenchmarks: Record<Industry, BenchmarkData[]> = {
                 Budget: { low: 45, median: 50, high: 55, insight: 'Volume play.' },
                 'Mid-Range': { low: 55, median: 60, high: 65, insight: 'Healthy margins for branding.' },
                 Luxury: { low: 70, median: 75, high: 85, insight: 'Brand premium drives high margins.' },
+            },
+        },
+        // Strategic Efficiency (CMO Level)
+        {
+            id: 'ltv_cac',
+            category: 'Strategic Efficiency',
+            name: 'LTV:CAC Ratio',
+            unit: 'x',
+            description: 'Lifetime Value divided by Customer Acquisition Cost. The gold standard for sustainability.',
+            ranges: {
+                Budget: { low: 2.5, median: 3.5, high: 5.0, insight: 'High volume requires strong unit economics.' },
+                'Mid-Range': { low: 3.0, median: 4.0, high: 6.0, insight: 'Healthy growth engine.' },
+                Luxury: { low: 3.5, median: 5.0, high: 8.0, insight: 'Exceptional brand value drives high ratios.' },
+            },
+        },
+        {
+            id: 'mer',
+            category: 'Strategic Efficiency',
+            name: 'Marketing Efficiency Ratio (MER)',
+            unit: 'x',
+            description: 'Total Revenue / Total Marketing Spend. The "Blended ROAS" of the business.',
+            ranges: {
+                Budget: { low: 4.0, median: 6.0, high: 9.0, insight: 'Must be high to sustain low margins.' },
+                'Mid-Range': { low: 3.5, median: 5.0, high: 7.0, insight: 'Balanced growth and profitability.' },
+                Luxury: { low: 2.5, median: 4.0, high: 6.0, insight: 'Brand building investment lowers short-term MER.' },
+            },
+        },
+        // Channel Mix
+        {
+            id: 'email_rev_share',
+            category: 'Channel Mix',
+            name: 'Email Revenue Share',
+            unit: '%',
+            description: 'Percentage of total revenue attributed to Email Marketing.',
+            ranges: {
+                Budget: { low: 15, median: 20, high: 30, insight: 'Critical for low-cost retention.' },
+                'Mid-Range': { low: 20, median: 25, high: 35, insight: 'The backbone of profitable growth.' },
+                Luxury: { low: 10, median: 15, high: 25, insight: 'Personalized clienteling drives this.' },
+            },
+        },
+        {
+            id: 'sms_rev_share',
+            category: 'Channel Mix',
+            name: 'SMS Revenue Share',
+            unit: '%',
+            description: 'Percentage of total revenue attributed to SMS Marketing.',
+            ranges: {
+                Budget: { low: 2, median: 5, high: 10, insight: 'High impact for flash sales.' },
+                'Mid-Range': { low: 3, median: 7, high: 12, insight: 'Growing channel for engagement.' },
+                Luxury: { low: 1, median: 3, high: 5, insight: 'Used sparingly for VIP service.' },
+            },
+        },
+        // Retention Deep Dive
+        {
+            id: 'churn_rate',
+            category: 'Retention',
+            name: 'Annual Churn Rate',
+            unit: '%',
+            description: 'Percentage of customers who do not return within 12 months.',
+            ranges: {
+                Budget: { low: 60, median: 70, high: 80, insight: 'High churn is typical; focus on acquisition volume.' },
+                'Mid-Range': { low: 40, median: 50, high: 60, insight: 'Retention is key to profitability.' },
+                Luxury: { low: 20, median: 30, high: 40, insight: 'Client relationships reduce churn significantly.' },
             },
         },
     ],

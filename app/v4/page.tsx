@@ -1,9 +1,10 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Header } from '@/components/Header';
 import { SidebarInputs } from '@/components/SidebarInputs';
 import { BenchmarkGrid } from '@/components/BenchmarkGrid';
+import { AiAnalysisResult } from '@/components/AiAnalysisResult';
 import { retailBenchmarks, Industry, PriceTier } from '@/data/retailBenchmarks';
 
 export default function V4Page() {
@@ -11,9 +12,18 @@ export default function V4Page() {
     const [priceTier, setPriceTier] = useState<PriceTier>('Mid-Range');
     const [isComparing, setIsComparing] = useState(false);
     const [userValues, setUserValues] = useState<Record<string, string>>({});
+    const [showAnalysis, setShowAnalysis] = useState(false);
+    const analysisRef = useRef<HTMLDivElement>(null);
 
     const handleValueChange = (id: string, value: string) => {
         setUserValues(prev => ({ ...prev, [id]: value }));
+    };
+
+    const handleGenerateAnalysis = () => {
+        setShowAnalysis(true);
+        setTimeout(() => {
+            analysisRef.current?.scrollIntoView({ behavior: 'smooth' });
+        }, 100);
     };
 
     const currentBenchmarks = retailBenchmarks[industry];
@@ -32,29 +42,16 @@ export default function V4Page() {
                             priceTier={priceTier}
                             setPriceTier={setPriceTier}
                             isComparing={isComparing}
-                            setIsComparing={setIsComparing}
+                            setIsComparing={(val) => {
+                                setIsComparing(val);
+                                if (!val) setShowAnalysis(false);
+                            }}
                         />
                     </aside>
 
                     {/* Main Content - Scrollable */}
                     <div className="flex-1 w-full">
                         <div className="mb-8">
-                            <div className="flex items-center gap-3 mb-2">
-                                <span className="px-3 py-1 rounded-full bg-brevo-green/10 text-brevo-green text-xs font-bold uppercase tracking-wide">
-                                    {industry} • {priceTier}
-                                </span>
-                                <span className="text-gray-400 text-sm">|</span>
-                                <span className="text-gray-500 text-sm">Updated Nov 2024</span>
-                            </div>
-                            <h1 className="text-3xl font-bold text-gray-900 mb-2">
-                                {isComparing ? 'Your Performance Analysis' : 'Market Standard Benchmarks'}
-                            </h1>
-                            <p className="text-gray-600 text-lg">
-                                {isComparing
-                                    ? 'Compare your metrics against the industry standard. Red indicators suggest areas for immediate optimization.'
-                                    : 'Explore the standard KPIs for your industry. Click "Compare My Numbers" to benchmark your performance.'
-                                }
-                            </p>
                         </div>
 
                         <BenchmarkGrid
@@ -65,18 +62,58 @@ export default function V4Page() {
                             onValueChange={handleValueChange}
                         />
 
-                        <div className="mt-12 bg-brevo-dark-green text-white p-8 rounded-xl shadow-lg text-center">
-                            <h3 className="text-2xl font-bold mb-4">Want to beat these benchmarks?</h3>
-                            <p className="text-brevo-light/90 mb-8 max-w-2xl mx-auto text-lg">
-                                Brevo's all-in-one platform helps you optimize every stage of the customer journey, from acquisition to retention.
-                            </p>
-                            <div className="flex justify-center gap-4">
-                                <button className="px-8 py-4 bg-white text-brevo-dark-green font-bold rounded-lg hover:bg-gray-100 transition-colors">
-                                    Start Free Trial
+                        {/* Generate Analysis Button */}
+                        {isComparing && !showAnalysis && (
+                            <div className="mt-8 flex justify-center">
+                                <button
+                                    onClick={handleGenerateAnalysis}
+                                    className="group relative inline-flex items-center justify-center px-8 py-4 text-lg font-bold text-white transition-all duration-200 bg-brevo-green font-pj rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brevo-green hover:bg-brevo-dark-green shadow-lg hover:shadow-xl transform hover:-translate-y-1"
+                                >
+                                    <span className="mr-2 text-2xl">✨</span>
+                                    Generate AI Analysis
+                                    <div className="absolute -top-2 -right-2">
+                                        <span className="relative flex h-4 w-4">
+                                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-brevo-green opacity-75"></span>
+                                            <span className="relative inline-flex rounded-full h-4 w-4 bg-brevo-green"></span>
+                                        </span>
+                                    </div>
                                 </button>
-                                <button className="px-8 py-4 bg-transparent border-2 border-white text-white font-bold rounded-lg hover:bg-white/10 transition-colors">
-                                    Talk to Sales
-                                </button>
+                            </div>
+                        )}
+
+                        {/* AI Analysis Result */}
+                        {showAnalysis && (
+                            <div ref={analysisRef} className="mt-12">
+                                <AiAnalysisResult
+                                    industry={industry}
+                                    priceTier={priceTier}
+                                    userValues={userValues}
+                                />
+                            </div>
+                        )}
+
+                        <div className="mt-20 relative">
+                            {/* Decorative blurred circles behind the block */}
+                            <div className="absolute -top-10 -left-10 w-64 h-64 bg-brevo-green/20 rounded-full blur-3xl pointer-events-none"></div>
+                            <div className="absolute -bottom-10 -right-10 w-64 h-64 bg-blue-500/20 rounded-full blur-3xl pointer-events-none"></div>
+
+                            <div className="relative bg-[#0B1221] text-white p-12 md:p-16 rounded-[2.5rem] shadow-2xl text-center overflow-hidden border border-white/5">
+                                <div className="relative z-10 max-w-4xl mx-auto">
+                                    <h3 className="text-3xl md:text-5xl font-bold mb-6 tracking-tight">
+                                        Turn these insights into revenue with Brevo
+                                    </h3>
+                                    <p className="text-gray-300 mb-10 max-w-2xl mx-auto text-lg md:text-xl leading-relaxed font-light">
+                                        The only CRM that combines <strong>Email, SMS, and Automation</strong> to help you build lasting customer relationships and drive efficient growth.
+                                    </p>
+                                    <div className="flex flex-col sm:flex-row justify-center gap-4 items-center">
+                                        <button className="px-8 py-4 bg-brevo-green text-white font-bold text-lg rounded-full hover:bg-brevo-dark-green transition-all duration-300 shadow-lg hover:shadow-brevo-green/25 min-w-[200px]">
+                                            Start Free Trial
+                                        </button>
+                                        <button className="px-8 py-4 bg-transparent text-white font-medium text-lg rounded-full hover:bg-white/5 transition-colors min-w-[200px]">
+                                            Talk to Sales
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

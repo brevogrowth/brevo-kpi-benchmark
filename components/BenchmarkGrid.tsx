@@ -17,7 +17,7 @@ export const BenchmarkGrid = ({
     onValueChange
 }: BenchmarkGridProps) => {
 
-    const categories = ['Acquisition', 'Conversion', 'Retention', 'Economics'];
+    const categories = ['Strategic Efficiency', 'Acquisition', 'Conversion', 'Channel Mix', 'Retention', 'Economics'];
 
     const getStatus = (kpi: BenchmarkData, userVal: string) => {
         if (!userVal) return 'neutral';
@@ -25,8 +25,7 @@ export const BenchmarkGrid = ({
         const range = kpi.ranges[priceTier];
 
         // Logic depends on KPI type (higher is better vs lower is better)
-        // For simplicity, assuming higher is better for most, except CAC, Return Rate, Cart Abandon
-        const lowerIsBetter = ['cac', 'return_rate', 'cart_abandon', 'marketing_spend'].includes(kpi.id);
+        const lowerIsBetter = ['cac', 'return_rate', 'cart_abandon', 'marketing_spend', 'churn_rate'].includes(kpi.id);
 
         if (lowerIsBetter) {
             if (val <= range.low) return 'good';
@@ -46,12 +45,11 @@ export const BenchmarkGrid = ({
                 if (categoryKpis.length === 0) return null;
 
                 return (
-                    <div key={category} className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-                        <div className="bg-gray-50 px-6 py-4 border-b border-gray-200 flex justify-between items-center">
-                            <h3 className="text-lg font-bold text-gray-900">{category}</h3>
-                            <span className="text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                {priceTier} Market Standards
-                            </span>
+                    <div key={category} className="bg-white rounded-xl shadow-[0_16px_48px_0_rgba(0,0,0,0.08)] border border-gray-100 overflow-hidden">
+                        <div className="bg-green-50 px-6 py-4 flex justify-between items-center border-b border-green-100">
+                            <div className="flex items-center gap-3">
+                                <h3 className="text-lg font-bold text-brevo-dark-green">{category}</h3>
+                            </div>
                         </div>
 
                         <div className="divide-y divide-gray-100">
@@ -105,26 +103,28 @@ export const BenchmarkGrid = ({
                                             </div>
 
                                             {/* User Input (Comparison Mode) */}
-                                            <div className={`w-full md:w-32 transition-opacity duration-300 ${isComparing ? 'opacity-100' : 'opacity-50 pointer-events-none grayscale'}`}>
-                                                <label className="block text-xs font-medium text-gray-500 mb-1">
-                                                    My Value
-                                                </label>
-                                                <div className="relative rounded-md shadow-sm">
-                                                    <input
-                                                        type="number"
-                                                        value={userVal}
-                                                        onChange={(e) => onValueChange(kpi.id, e.target.value)}
-                                                        className={`block w-full rounded-md sm:text-sm p-2 border ${status === 'good' ? 'border-green-300 focus:border-green-500 focus:ring-green-500 bg-green-50' :
+                                            {isComparing && (
+                                                <div className="w-full md:w-32 animate-fade-in-up">
+                                                    <label className="block text-xs font-medium text-gray-500 mb-1">
+                                                        My Value
+                                                    </label>
+                                                    <div className="relative rounded-md shadow-sm">
+                                                        <input
+                                                            type="number"
+                                                            value={userVal}
+                                                            onChange={(e) => onValueChange(kpi.id, e.target.value)}
+                                                            className={`block w-full rounded-md sm:text-sm p-2 border ${status === 'good' ? 'border-green-300 focus:border-green-500 focus:ring-green-500 bg-green-50' :
                                                                 status === 'bad' ? 'border-red-300 focus:border-red-500 focus:ring-red-500 bg-red-50' :
-                                                                    'border-gray-300 focus:border-brevo-green focus:ring-brevo-green'
-                                                            }`}
-                                                        placeholder="-"
-                                                    />
-                                                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
-                                                        <span className="text-gray-500 sm:text-xs">{kpi.unit}</span>
+                                                                    'border-gray-200 focus:border-brevo-green focus:ring-brevo-green'
+                                                                }`}
+                                                            placeholder="-"
+                                                        />
+                                                        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+                                                            <span className="text-gray-500 sm:text-xs">{kpi.unit}</span>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
+                                            )}
 
                                         </div>
                                     </div>
